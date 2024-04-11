@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dotenv-checker/internal/core"
+	"dotenv-builder/internal/core"
 	"fmt"
 )
 

@@ -9,9 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const ENV_FILE = "env.custom"
-
-var SecretFilePath string = "database.json"
+const ENV_FILE = ".env"
 
 type JSONData struct {
 	RequestID     string                 `json:"request_id"`
