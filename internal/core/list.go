@@ -39,6 +39,9 @@ func WriteHeaders(path string) {
 	case strings.Contains(path, "celery"):
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Celery\n"))
+	case strings.Contains(path, "build"):
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Build\n"))
 	default:
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Other\n"))
