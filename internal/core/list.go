@@ -16,6 +16,11 @@ func ListEnv(folderPath string) []string {
 	}
 
 	for _, file := range files {
+
+		if file.Name() == "server.json" {
+			break
+		}
+
 		listEnv = append(listEnv, fmt.Sprintf("%s/%s", folderPath, file.Name()))
 	}
 	return listEnv
@@ -24,9 +29,6 @@ func ListEnv(folderPath string) []string {
 func WriteHeaders(path string) {
 
 	switch {
-	case strings.Contains(path, "server"):
-		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
-		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Server\n"))
 	case strings.Contains(path, "database"):
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Database\n"))
