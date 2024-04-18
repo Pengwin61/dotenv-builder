@@ -1,79 +1,78 @@
 package core
 
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"os"
+// import (
+// 	"encoding/json"
+// 	"fmt"
+// 	"os"
+// )
 
-	"github.com/joho/godotenv"
-)
+// type JSONData struct {
+// 	RequestID     string                 `json:"request_id"`
+// 	LeaseID       string                 `json:"lease_id"`
+// 	LeaseDuration int                    `json:"lease_duration"`
+// 	Renewable     bool                   `json:"renewable"`
+// 	Data          map[string]interface{} `json:"data"`
+// 	Warnings      []string               `json:"warnings"`
+// }
+// type JSONDataList struct {
+// 	Data map[string]interface{} `json:"data"`
+// }
 
-const ENV_FILE = ".env"
+// type Secrets struct {
+// 	File *os.File
+// }
 
-type JSONData struct {
-	RequestID     string                 `json:"request_id"`
-	LeaseID       string                 `json:"lease_id"`
-	LeaseDuration int                    `json:"lease_duration"`
-	Renewable     bool                   `json:"renewable"`
-	Data          map[string]interface{} `json:"data"`
-	Warnings      []string               `json:"warnings"`
-}
+// func ReadFile(path string) (*Secrets, error) {
 
-type Secrets struct {
-	File *os.File
-}
+// 	var secretConfig *Secrets
 
-func GetEnvInFile(path string) map[string]string {
-	var myEnv map[string]string
+// 	file, err := os.Open(path)
+// 	if err != nil {
+// 		fmt.Println("Error opening file:", err)
+// 		return nil, err
+// 	}
 
-	reader, err := os.Open(path)
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+// 	secretConfig = &Secrets{
+// 		File: file,
+// 	}
 
-	myEnv, err = godotenv.Parse(reader)
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	return myEnv
-}
+// 	return secretConfig, nil
+// }
 
-func ReadFile(path string) (*Secrets, error) {
+// func (s *Secrets) Close() {
+// 	s.File.Close()
+// }
 
-	var secretConfig *Secrets
+// func (s *Secrets) ReadJson(path string) error {
 
-	file, err := os.Open(path)
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return nil, err
-	}
+// 	var jsonData JSONData
+// 	err := json.NewDecoder(s.File).Decode(&jsonData)
+// 	if err != nil {
+// 		fmt.Println("Error decoding JSON:", err)
+// 		return err
+// 	}
 
-	secretConfig = &Secrets{
-		File: file,
-	}
+// 	dataData := jsonData.Data["data"].(map[string]interface{})
+// 	for key, value := range dataData {
 
-	return secretConfig, nil
-}
+// 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s=%v\n", key, value))
 
-func (s *Secrets) Close() {
-	s.File.Close()
-}
+// 	}
+// 	return nil
+// }
 
-func (s *Secrets) ReadJson(path string) error {
+// func ReadList(path string) {
+// 	file, err := os.ReadFile(path)
+// 	if err != nil {
+// 		fmt.Println("Error reading JSON file:", err)
+// 		return
+// 	}
 
-	var jsonData JSONData
-	err := json.NewDecoder(s.File).Decode(&jsonData)
-	if err != nil {
-		fmt.Println("Error decoding JSON:", err)
-		return err
-	}
-
-	dataData := jsonData.Data["data"].(map[string]interface{})
-	for key, value := range dataData {
-
-		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s=%v\n", key, value))
-
-	}
-	return nil
-}
+// 	var data []string
+// 	err = json.Unmarshal(file, &data)
+// 	if err != nil {
+// 		fmt.Println("Error parsing JSON:", err)
+// 		return
+// 	}
+// 	fmt.Println(data)
+// }

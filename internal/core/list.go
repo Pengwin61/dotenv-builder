@@ -2,29 +2,33 @@ package core
 
 import (
 	"fmt"
-	"os"
 	"strings"
 )
 
-func ListEnv(folderPath string) []string {
-	var listEnv []string
+const ENV_FILE = ".env"
 
-	files, err := os.ReadDir(folderPath)
-	if err != nil {
-		fmt.Println("Error reading directory:", err)
-		return nil
-	}
+// func ListEnv(folderPath string) []string {
+// 	var listEnv []string
 
-	for _, file := range files {
+// 	files, err := os.ReadDir(folderPath)
+// 	if err != nil {
+// 		fmt.Println("Error reading directory:", err)
+// 		return nil
+// 	}
 
-		if file.Name() == "server.json" {
-			break
-		}
+// 	for _, file := range files {
 
-		listEnv = append(listEnv, fmt.Sprintf("%s/%s", folderPath, file.Name()))
-	}
-	return listEnv
-}
+// 		if file.Name() == "server.json" {
+// 			break
+// 		}
+// 		if file.Name() == "list.json" {
+// 			break
+// 		}
+
+// 		listEnv = append(listEnv, fmt.Sprintf("%s/%s", folderPath, file.Name()))
+// 	}
+// 	return listEnv
+// }
 
 func WriteHeaders(path string) {
 
