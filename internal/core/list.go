@@ -7,29 +7,6 @@ import (
 
 const ENV_FILE = ".env"
 
-// func ListEnv(folderPath string) []string {
-// 	var listEnv []string
-
-// 	files, err := os.ReadDir(folderPath)
-// 	if err != nil {
-// 		fmt.Println("Error reading directory:", err)
-// 		return nil
-// 	}
-
-// 	for _, file := range files {
-
-// 		if file.Name() == "server.json" {
-// 			break
-// 		}
-// 		if file.Name() == "list.json" {
-// 			break
-// 		}
-
-// 		listEnv = append(listEnv, fmt.Sprintf("%s/%s", folderPath, file.Name()))
-// 	}
-// 	return listEnv
-// }
-
 func WriteHeaders(path string) {
 
 	switch {
@@ -54,6 +31,15 @@ func WriteHeaders(path string) {
 	case strings.Contains(path, "payler"):
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "PAYLER\n"))
+	case strings.Contains(path, "docker"):
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Docker\n"))
+	case strings.Contains(path, "project"):
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "App\n"))
+	case strings.Contains(path, "app"):
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "App\n"))
 	default:
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Other\n"))

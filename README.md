@@ -2,12 +2,16 @@
 
 
 # About
-В первой итерации билдер парсит секреты из файла `.json` который были сохранены из Hashicorp Vault CLI 
-example:
-`vault kv get -format=json  secret/projects/test-project/django > credenticals/
-celery.json` 
-собирает из разных файлов `credenticals/*.json` в единый файл `.env`
+Получение секретов из Hashicorp Vault
 
-# Roadmap
+# Run 
+dotenv-builder --path="path/to/secrets"
 
-* Добавить поддержку Vault нативно не из файлов.
+`go run main.go --path="projects/$CI_PROJECT_ROOT_NAMESPACE/$CI_PROJECT_NAME/$CI_ENVIRONMENT_NAME"`
+
+# For testing
+```
+export CI_ENVIRONMENT_NAME=development
+export CI_PROJECT_ROOT_NAMESPACE=ProjectGroup
+export CI_PROJECT_NAME=ProjectName
+```
