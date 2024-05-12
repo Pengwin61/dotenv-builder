@@ -11,7 +11,11 @@ dotenv-builder --path="path/to/secrets"
 
 # For testing
 ```
+export VAULT_ADDR="https://vault.domain.com"
+export VAULT_TOKEN="TOKEN"
+export VAULT_SECRETS_ENGINES_NAME="secret"
+
 export CI_ENVIRONMENT_NAME=development
-export CI_PROJECT_ROOT_NAMESPACE=ProjectGroup
-export CI_PROJECT_NAME=ProjectName
+export CI_PROJECT_ROOT_NAMESPACE=prj
+export CI_PROJECT_NAME=prj1
 ```
