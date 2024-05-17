@@ -63,11 +63,19 @@ func main() {
 }
 
 func getCountOldVersion(kv2 *api.KVv2, ctx context.Context, path string) int {
+	array := make([]int, 0)
+
 	list, err := kv2.GetVersionsAsList(ctx, path)
 	if err != nil {
 		log.Println(err)
 	}
-	oldVersion := len(list) - 1
+
+	for k, v := range list {
+		fmt.Println(k, v.Version)
+		array = append(array, v.Version)
+	}
+
+	oldVersion := array[len(array)-2]
 	return oldVersion
 }
 
