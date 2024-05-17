@@ -65,7 +65,7 @@ func main() {
 func getCountOldVersion(kv2 *api.KVv2, ctx context.Context, path string) int {
 	list, err := kv2.GetVersionsAsList(ctx, path)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 	oldVersion := len(list) - 1
 	return oldVersion
@@ -84,7 +84,7 @@ func getListSecrets(vaultClient *api.Client, path string) []string {
 		if ok {
 			array = append(array, str)
 		} else {
-			fmt.Println("Ошибка при конвертации ключа в строку")
+			log.Println("Ошибка при конвертации ключа в строку")
 		}
 	}
 
@@ -95,7 +95,7 @@ func writeLatestVersion(kv2 *api.KVv2, ctx context.Context, path string) {
 
 	key, err := kv2.Get(ctx, path)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	for k, v := range key.Data {
@@ -106,7 +106,7 @@ func writeLatestVersion(kv2 *api.KVv2, ctx context.Context, path string) {
 func writeTagretVersion(kv2 *api.KVv2, ctx context.Context, path string, version int) {
 	old, err := kv2.GetVersion(ctx, path, version)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	for k, v := range old.Data {
@@ -114,8 +114,6 @@ func writeTagretVersion(kv2 *api.KVv2, ctx context.Context, path string, version
 		if k == "APP_IMAGE" {
 			core.WriteFileEnv(core.ENV_FILE, fmt.Sprintf("%s=%v\n", "OLD_APP_IMAGE", v))
 		}
-		// fmt.Println(k, v)
-		//
 	}
 }
 
