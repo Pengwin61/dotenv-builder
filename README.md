@@ -2,7 +2,10 @@
 
 
 # About
-Получение секретов из Hashicorp Vault
+Получение секретов из Hashicorp Vault.
+
+APP_IMAGE - Имя doсker image:TAG
+OLD_APP_IMAGE - Пердыдущий TAG
 
 # Run 
 dotenv-builder --path="path/to/secrets"
