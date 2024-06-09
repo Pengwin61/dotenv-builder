@@ -34,15 +34,18 @@ func WriteHeaders(path string) {
 	case strings.Contains(path, "docker"):
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Docker\n"))
-	case strings.Contains(path, "project"):
-		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
-		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "App\n"))
-	case strings.Contains(path, "app"):
+	case strings.Contains(path, "project") || strings.Contains(path, "projects") || strings.Contains(path, "app"):
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "App\n"))
 	case strings.Contains(path, "s3"):
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "S3\n"))
+	case strings.Contains(path, "mail") || strings.Contains(path, "email"):
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Email\n"))
+	case strings.Contains(path, "integration"):
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Integration\n"))
 	default:
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s", "\n"))
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Other\n"))

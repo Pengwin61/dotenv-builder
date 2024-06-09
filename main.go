@@ -52,17 +52,19 @@ func main() {
 
 		core.WriteHeaders(v)
 
-		res := fmt.Sprintf("%s%s", *vaultSecretPath, v)
-		writeLatestVersion(kv2, ctx, res)
-		// printLatestVersion(kv2, ctx, res)
-		// printTagretVersion(kv2, ctx, res, getCountOldVersion(kv2, ctx, res))
+		fullPath := fmt.Sprintf("%s%s", *vaultSecretPath, v)
 
-		writeTagretVersion(kv2, ctx, res, getCountOldVersion(kv2, ctx, res))
+		writeLatestVersion(kv2, ctx, fullPath)
+		// printLatestVersion(kv2, ctx, fullPath)
+		// printTagretVersion(kv2, ctx, fullPath, getIndexOldVersion(kv2, ctx, fullPath))
+
+		if strings.Contains(v, "build") {
+			getOtherVersion(kv2, ctx, fullPath)
+		}
 	}
-
 }
 
-func getCountOldVersion(kv2 *api.KVv2, ctx context.Context, path string) int {
+func getIndexOldVersion(kv2 *api.KVv2, ctx context.Context, path string) int {
 	array := make([]int, 0)
 	var oldVersion int
 
@@ -76,8 +78,6 @@ func getCountOldVersion(kv2 *api.KVv2, ctx context.Context, path string) int {
 			array = append(array, v.Version)
 		}
 		oldVersion = array[len(array)-2]
-		// log.Println("CURRENT VERSION:", array)
-		// log.Println("OLD VERSION:", oldVersion)
 	}
 
 	return oldVersion
@@ -115,6 +115,55 @@ func writeLatestVersion(kv2 *api.KVv2, ctx context.Context, path string) {
 	}
 }
 
+func getSecret(kv2 *api.KVv2, ctx context.Context, path string) string {
+	var currentVersion string
+
+	key, err := kv2.Get(ctx, path)
+	if err != nil {
+		log.Println(err)
+	}
+	for k, v := range key.Data {
+		if k == "APP_IMAGE" {
+			currentVersion = fmt.Sprintf("%v", v)
+		}
+	}
+	return currentVersion
+}
+
+func getSecretVersion(kv2 *api.KVv2, ctx context.Context, path string, version int) string {
+	var secret string
+	old, err := kv2.GetVersion(ctx, path, version)
+	if err != nil {
+		log.Println(err)
+	}
+	for k, v := range old.Data {
+		if k == "APP_IMAGE" {
+			secret = fmt.Sprintf("%v", v)
+		}
+	}
+	return secret
+}
+
+func getOtherVersion(kv2 *api.KVv2, ctx context.Context, fullPath string) {
+	var indexOldVersion int
+	current := getSecret(kv2, ctx, fullPath)
+	indexOldVersion = getIndexOldVersion(kv2, ctx, fullPath)
+	old := getSecretVersion(kv2, ctx, fullPath, indexOldVersion)
+
+	if current == old {
+		for indexOldVersion := indexOldVersion; indexOldVersion >= 1; indexOldVersion-- {
+			old := getSecretVersion(kv2, ctx, fullPath, indexOldVersion)
+			fmt.Println("CURRENT:", current, "OLD:", old, "DIFF:", current != old, "VERSION:", indexOldVersion)
+			if current != old {
+				writeTagretVersion(kv2, ctx, fullPath, indexOldVersion)
+				break
+			}
+		}
+	} else {
+		writeTagretVersion(kv2, ctx, fullPath, indexOldVersion)
+	}
+}
+
 func writeTagretVersion(kv2 *api.KVv2, ctx context.Context, path string, version int) {
 	old, err := kv2.GetVersion(ctx, path, version)
 	if err != nil {
@@ -122,7 +171,6 @@ func writeTagretVersion(kv2 *api.KVv2, ctx context.Context, path string, version
 	}
 
 	for k, v := range old.Data {
-
 		if k == "APP_IMAGE" {
 			core.WriteFileEnv(core.ENV_FILE, fmt.Sprintf("%s=%v\n", "OLD_APP_IMAGE", v))
 		}
