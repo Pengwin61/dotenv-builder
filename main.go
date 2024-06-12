@@ -2,11 +2,10 @@ package main
 
 import (
 	"context"
+	"dotenv-builder/internal/config"
 	"dotenv-builder/internal/core"
 	"dotenv-builder/internal/vault"
-	"flag"
 	"fmt"
-	"os"
 	"strings"
 
 	"log"
@@ -17,21 +16,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	// Получаем название engines из env
-	vaultEnginesName := os.Getenv("VAULT_SECRETS_ENGINES_NAME")
-
-	// Получаем путь к секретам из флага
-	vaultSecretPath := flag.String("path", "projects/", "path to secrets")
-	if *vaultSecretPath == "" {
-		log.Fatal("path is empty, i can`t get secrets without path")
-	}
-	flag.Parse()
-
-	// Проверяем путь на префикс
-	checkSecretPath(vaultSecretPath)
-
-	// Формируем путь для метаданных
-	fullPath := vaultEnginesName + "/" + "metadata" + "/" + *vaultSecretPath
+	config := config.InitConfig()
 
 	// Проверяем существует ли файл .env
 	core.CheckDotEnv(core.ENV_FILE)
@@ -39,24 +24,22 @@ func main() {
 	// Init Vault client
 	vaultClient, err := vault.NewClient()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	// Init KV v2 secrets engine
-	kv2 := vaultClient.KVv2(vaultEnginesName)
+	kv2 := vaultClient.KVv2(config.VaultEnginesName)
 
 	// Get list of secrets
-	secretList := getListSecrets(vaultClient, fullPath)
+	secretList := getListSecrets(vaultClient, config.VaultPathWithMetaData)
 
 	for _, v := range secretList {
 
 		core.WriteHeaders(v)
 
-		fullPath := fmt.Sprintf("%s%s", *vaultSecretPath, v)
+		fullPath := fmt.Sprintf("%s%s", config.VaultSecretPath, v)
 
 		writeLatestVersion(kv2, ctx, fullPath)
-		// printLatestVersion(kv2, ctx, fullPath)
-		// printTagretVersion(kv2, ctx, fullPath, getIndexOldVersion(kv2, ctx, fullPath))
 
 		if strings.Contains(v, "build") {
 			getOtherVersion(kv2, ctx, fullPath)
@@ -174,13 +157,5 @@ func writeTagretVersion(kv2 *api.KVv2, ctx context.Context, path string, version
 		if k == "APP_IMAGE" {
 			core.WriteFileEnv(core.ENV_FILE, fmt.Sprintf("%s=%v\n", "OLD_APP_IMAGE", v))
 		}
-	}
-}
-
-func checkSecretPath(vaultSecretPath *string) {
-	var res string
-	if !strings.HasSuffix(*vaultSecretPath, "/") {
-		res = fmt.Sprint(*vaultSecretPath + "/")
-		*vaultSecretPath = res
 	}
 }
