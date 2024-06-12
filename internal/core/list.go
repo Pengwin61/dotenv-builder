@@ -46,6 +46,9 @@ func WriteHeaders(path string) {
 	case strings.Contains(path, "integration"):
 		WriteFileEnv(ENV_FILE, "\n")
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Integration\n"))
+	case strings.Contains(path, "sms"):
+		WriteFileEnv(ENV_FILE, "\n")
+		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "SMS\n"))
 	default:
 		WriteFileEnv(ENV_FILE, "\n")
 		WriteFileEnv(ENV_FILE, fmt.Sprintf("%s %v\n", "##", "Other\n"))
