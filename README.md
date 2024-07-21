@@ -8,7 +8,9 @@ APP_IMAGE - Имя doсker image:TAG
 OLD_APP_IMAGE - Пердыдущий TAG
 
 # Run 
-dotenv-builder --path="path/to/secrets"
+dotenv-builder getenv --path="path/to/secrets"
+
+dotenv-builder create --path="path/to/secrets"
 
 `go run main.go --path="projects/$CI_PROJECT_ROOT_NAMESPACE/$CI_PROJECT_NAME/$CI_ENVIRONMENT_NAME"`
 

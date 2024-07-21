@@ -1,10 +1,10 @@
 package config
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -15,7 +15,7 @@ type Config struct {
 	VaultPathWithMetaData string
 }
 
-func InitConfig() Config {
+func InitConfig(vaultSecretPath *string) Config {
 
 	vaultServerAddr := os.Getenv("VAULT_ADDR")
 	if vaultServerAddr == "" {
@@ -33,20 +33,18 @@ func InitConfig() Config {
 		log.Fatal("VAULT_SECRETS_ENGINES_NAME is empty")
 	}
 
-	// Получаем путь к секретам из флага
-	vaultSecretPath := flag.String("path", "projects/", "path to secrets")
-	if *vaultSecretPath == "" {
-		log.Fatal("path is empty, i can`t get secrets without path")
-	}
-	flag.Parse()
-
 	// Проверяем путь на префикс
 	checkSecretPath(vaultSecretPath)
 
 	// Формируем путь для метаданных
-	vaultPathWithMetadata := vaultEnginesName + "/" + "metadata" + "/" + *vaultSecretPath
+	vaultPathWithMetadata := getMetaPath(vaultSecretPath, &vaultEnginesName)
 
 	return Config{vaultServerAddr, vaultEnginesName, *vaultSecretPath, vaultPathWithMetadata}
+}
+
+func getMetaPath(vaultSecretPath *string, vaultEnginesName *string) (vaultPathWithMetadata string) {
+
+	return filepath.Join(*vaultEnginesName, "metadata", *vaultSecretPath)
 }
 
 func checkSecretPath(vaultSecretPath *string) {
