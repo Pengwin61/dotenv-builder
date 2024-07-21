@@ -5,7 +5,7 @@ import (
 	"dotenv-builder/internal/config"
 	"dotenv-builder/internal/core"
 	"dotenv-builder/internal/vault"
-	vaultwrapper "dotenv-builder/internal/vaultWrapper"
+	"dotenv-builder/internal/vaultwrapper"
 	"log"
 	"path/filepath"
 	"strings"
